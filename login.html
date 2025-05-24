@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Logowanie i rejestracja</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#007bff">
+</head>
+<body>
+    <div id="loginPage">
+        <h1>Logowanie</h1>
+        <input type="text" id="loginUsername" placeholder="Nazwa uzytkownika">
+        <input type="password" id="loginPassword" placeholder="Haslo">
+        <button onclick="login()">Zaloguj</button>
+    </div>
+
+    <hr>
+
+    <div id="registrationForm">
+        <h2>Rejestracja</h2>
+        <input type="text" id="registerUsername" placeholder="Nowa nazwa uzytkownika">
+        <input type="password" id="registerPassword" placeholder="Haslo">
+        <button onclick="register()">Zarejestruj</button>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('Service Worker zarejestrowany.'))
+                .catch(error => console.error('Blad SW:', error));
+        }
+    </script>
+</body>
+</html>
