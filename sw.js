@@ -1,3 +1,5 @@
+// sw.js
+
 const CACHE_NAME = 'movieapp-cache-v1';
 const urlsToCache = [
     '/',
@@ -15,25 +17,9 @@ const urlsToCache = [
 
 // Instalacja - cache'ujemy pliki
 self.addEventListener('install', event => {
-    self.skipWaiting(); // natychmiastowa aktywacja
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => {
-                return Promise.all(
-                    urlsToCache.map(url => {
-                        return fetch(url)
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error(`Błąd przy pobieraniu ${url}: ${response.statusText}`);
-                                }
-                                return cache.put(url, response.clone());
-                            })
-                            .catch(err => {
-                                console.error(`Nie udało się zcache'ować ${url}:`, err);
-                            });
-                    })
-                );
-            })
+            .then(cache => cache.addAll(urlsToCache))
     );
 });
 
@@ -47,7 +33,6 @@ self.addEventListener('activate', event => {
             );
         })
     );
-    self.clients.claim(); // natychmiastowe przejęcie kontroli nad stroną
 });
 
 // Fetch - obsługa żądań (cache-first)
@@ -56,6 +41,7 @@ self.addEventListener('fetch', event => {
         caches.match(event.request).then(response => {
             return response || fetch(event.request);
         }).catch(() => {
+            // fallback dla trybu offline
             if (event.request.mode === 'navigate') {
                 return caches.match('/index.html');
             }
